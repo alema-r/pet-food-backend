@@ -1,0 +1,31 @@
+version: '3.4'
+services:
+  backend:
+    container_name: node_backend
+    build: .
+    environment:
+      - PORT=8081
+      - PGUSER=root
+      - PGPASS=password
+      - PGHOST=postgres_db
+      - PGDATABASE=pet_food_db
+    ports:
+      - '8081:8081'
+    depends_on:
+      - db
+      
+  db:
+    container_name: postgres_db
+    image: postgres:14.3-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=pet_food_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+      
+volumes:
+  db:
+    driver: local
