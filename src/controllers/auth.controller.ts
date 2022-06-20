@@ -1,8 +1,7 @@
 import express from "express";
 import { hash, compare } from "bcrypt";
 import { UserCreateModel, Role, User } from "../models/users";
-import { generateToken } from "../util/jwt";
-import { JwtPayload } from "jsonwebtoken";
+import { JwtPayload, sign } from "jsonwebtoken";
 
 /**
  * Function that creates a User. Params are taken from the body of the request
@@ -46,8 +45,8 @@ export async function login(req: express.Request, res: express.Response) {
         if (!checkPassword) {
             return res.status(200).json({ error: "User/password pair don't match." });
         }
-        const payload: JwtPayload = { username: dbUser.username, role: dbUser.role };
-        const jwtToken: string = generateToken(payload);
+        const payload: JwtPayload = { id: dbUser.id, username: dbUser.username, role: dbUser.role };
+        const jwtToken: string = sign(payload, process.env.JWT_SECRET);
         
         return res.json({ token: jwtToken });
     } catch (error) {

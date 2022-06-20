@@ -1,5 +1,7 @@
-// necessary to use process.env variables
+import { Jwt, JwtPayload } from "jsonwebtoken";
+
 declare global {
+    // necessary to use process.env variables
     namespace NodeJS {
         interface ProcessEnv {
             JWT_SECRET: string;
@@ -12,6 +14,12 @@ declare global {
             PGHOST: string,
         }
     }
+    // to add properties to `express.Request`
+    namespace Express {
+    interface Request {
+      user: JwtPayload;
+    }
+  }
 }
 
 // to treat this script as module
