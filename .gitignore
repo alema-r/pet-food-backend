@@ -1,3 +1,5 @@
 img/
 node_modules/
-dist/
+dist/src/
+dist/index.js
+dist/index.js.map

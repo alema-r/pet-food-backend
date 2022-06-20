@@ -2,7 +2,7 @@ import { CreationOptional, DataTypes, HasManyAddAssociationMixin, HasManyAddAsso
 import { Sequelize } from "sequelize/types";
 import { Order } from './orders';
 
-enum Role {
+export enum Role {
     ADMIN,
     USER
 }
@@ -26,6 +26,13 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
     declare hasOrders: HasManyHasAssociationsMixin<Order, number>;
     declare countOrders: HasManyCountAssociationsMixin;
     declare createOrder: HasManyCreateAssociationMixin<Order, 'userId'>;
+}
+
+// this interface will come in handy when dealing with requests
+export interface UserCreateModel {
+    username: string;
+    password: string;
+    role: Role;
 }
 
 export const initUser = (sequelize: Sequelize) => {
