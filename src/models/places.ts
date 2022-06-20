@@ -5,6 +5,8 @@ import { Sequelize } from "sequelize/types";
 export class Place extends Model<InferAttributes<Place>, InferCreationAttributes<Place>> {
     declare id: CreationOptional<number>;
     declare name: string;
+    declare area: string;
+    declare coords: any;
 
     // Association with OrderPlace
     declare getOrderPlaces: HasManyGetAssociationsMixin<OrderPlace>;
@@ -30,12 +32,14 @@ export const initPlace = (sequelize: Sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        /*
+        area: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         coords: {
-            type: Datatypes.GEOGRAPHY,
+            type: DataTypes.GEOMETRY('POINT'),
             allowNull: false
         }
-        */
     }, {
         sequelize,
         modelName: 'place'

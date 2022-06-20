@@ -5,7 +5,8 @@ import { Order } from "./orders";
 
 export class OrderDetail extends Model<InferAttributes<OrderDetail>, InferCreationAttributes<OrderDetail>> {
     declare quantity: number;
-    
+    declare withdrawal_order: number;
+
     declare orderUuid: ForeignKey<Order['uuid']>;
     declare foodId: ForeignKey<Food['id']>;
 }
@@ -13,6 +14,10 @@ export class OrderDetail extends Model<InferAttributes<OrderDetail>, InferCreati
 export const initOrderDetail = (sequelize: Sequelize) => {
     OrderDetail.init({
         quantity: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        withdrawal_order: {
             type: DataTypes.INTEGER,
             allowNull: false
         }
