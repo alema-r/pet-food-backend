@@ -1,5 +1,9 @@
 img/
 node_modules/
-dist/src/
+dist/src/controllers/
+dist/src/middleware/
+dist/src/models/
+dist/src/routes/
+dist/src/util/
 dist/index.js
 dist/index.js.map
