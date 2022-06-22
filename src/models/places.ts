@@ -42,6 +42,7 @@ export const initPlace = (sequelize: Sequelize) => {
         }
     }, {
         sequelize,
-        modelName: 'place'
+        modelName: 'place',
+        timestamps: false
     });
 };
