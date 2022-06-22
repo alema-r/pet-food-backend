@@ -5,5 +5,6 @@ dist/src/middleware/
 dist/src/models/
 dist/src/routes/
 dist/src/util/
+dist/src/errors/
 dist/index.js
 dist/index.js.map
