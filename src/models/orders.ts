@@ -1,10 +1,10 @@
-import { DataTypes, ForeignKey, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, ForeignKey, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { Sequelize } from "sequelize/types";
 import { OrderDetail } from './order_details';
 import { OrderPlace } from './order_places';
 import { User } from './users';
 
-enum Status {
+export enum OrderStatus {
     'CREATED',
     'FAILED',
     'RUNNING',
@@ -12,8 +12,8 @@ enum Status {
 }
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
-    declare uuid: string;
-    declare status: Status;
+    declare uuid: CreationOptional<string>;
+    declare status: OrderStatus;
 
     declare userId: ForeignKey<User['id']>;
 

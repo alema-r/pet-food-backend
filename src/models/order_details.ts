@@ -23,6 +23,13 @@ export const initOrderDetail = (sequelize: Sequelize) => {
         }
     }, {
         sequelize,
-        modelName: 'order_detail'
+        modelName: 'order_detail',
+        timestamps: false
     });
 };
+
+export interface OrderDetailCreateModel {
+    name: string,
+    quantity: number,
+    withdrawal_order: number
+}

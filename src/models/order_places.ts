@@ -18,6 +18,12 @@ export const initOrderPlace = (sequelize: Sequelize) => {
         }
     }, {
         sequelize,
-        modelName: 'order_place'
+        modelName: 'order_place',
+        timestamps: false
     });
 };
+
+export interface OrderPlaceCreateModel {
+    name: string,
+    quantity_to_deliver: number
+}
