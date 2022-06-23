@@ -22,8 +22,3 @@ export const initOrderPlace = (sequelize: Sequelize) => {
         timestamps: false
     });
 };
-
-export interface OrderPlaceCreateModel {
-    name: string,
-    quantity_to_deliver: number
-}

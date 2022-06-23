@@ -14,10 +14,9 @@ let errorFactory = new ErrorFactory();
 export function errorHandler(err: ErrorEnum | any, req: express.Request, res: express.Response, next: express.NextFunction) {
     if(err in ErrorEnum){
         const error = errorFactory.getError(err);
-        return res.status(error.status).json({ error: error.message});
+        return res.status(error.status).json({ error: error.message });
     }
-    else{
-        return res.status(500).json({ error: err});
+    else {
+        return res.status(500).json({ error: err });
     }
-    
 }

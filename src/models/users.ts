@@ -28,12 +28,6 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
     declare createOrder: HasManyCreateAssociationMixin<Order, 'userId'>;
 }
 
-// this interface will come in handy when dealing with requests
-export interface UserCreateModel {
-    username: string;
-    password: string;
-    role: Role;
-}
 
 export const initUser = (sequelize: Sequelize) => {
     User.init({

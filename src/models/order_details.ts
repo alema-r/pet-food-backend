@@ -27,9 +27,3 @@ export const initOrderDetail = (sequelize: Sequelize) => {
         timestamps: false
     });
 };
-
-export interface OrderDetailCreateModel {
-    name: string,
-    quantity: number,
-    withdrawal_order: number
-}

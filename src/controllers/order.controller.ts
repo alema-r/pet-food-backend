@@ -2,11 +2,12 @@ import express from "express";
 import { ErrorEnum } from "../errors/httpErrors";
 import { Food } from "../models/foods";
 import { Order, OrderStatus } from "../models/orders";
-import { OrderDetail, OrderDetailCreateModel } from "../models/order_details";
-import { OrderPlace, OrderPlaceCreateModel } from "../models/order_places";
+import { OrderDetail } from "../models/order_details";
+import { OrderPlace } from "../models/order_places";
 import { Place } from "../models/places";
 import { User } from "../models/users";
 import sequelize from "../util/db";
+import { OrderDetailCreateModel, OrderPlaceCreateModel } from "../util/parametersInterface";
 
 /**
  * Function that creates an order by using details provided in the request's body
@@ -35,7 +36,8 @@ export async function createOrder(req: express.Request, res: express.Response, n
             if (f === null) {
                 await transaction.rollback();
                 return next(ErrorEnum.PARAM_NOT_VALID);
-            }await OrderDetail.create({
+            }
+            await OrderDetail.create({
                 orderUuid: order.uuid,
                 quantity: food.quantity,
                 foodId: f.id,

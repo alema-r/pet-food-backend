@@ -2,11 +2,13 @@ import { Router } from 'express';
 import { createOrder, getAllOrders, getOrderByUuid, getOrderStatus } from '../controllers/order.controller'; 
 import { checkAuth, checkPrivileges, hasAccessToOrder } from '../middleware/auth.middleware';
 import { Role } from '../models/users';
+import { validateParams } from '../middleware/validation.middleware';
+import { PostParameters } from '../util/parametersInterface';
 
 const orderRouter: Router = Router();
 
 // create new order
-orderRouter.post('/', checkAuth, checkPrivileges([Role.USER]), createOrder);
+orderRouter.post('/', checkAuth, checkPrivileges([Role.USER]), validateParams([PostParameters.ORDER_DETAIL, PostParameters.ORDER_PLACE]), createOrder);
 // get all orders
 orderRouter.get('/', checkAuth, checkPrivileges([Role.ADMIN]), getAllOrders);
 // get order with specified uuid

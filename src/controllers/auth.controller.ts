@@ -1,9 +1,9 @@
 import express from "express";
 import { hash, compare } from "bcrypt";
-import { UserCreateModel, Role, User } from "../models/users";
+import { Role, User } from "../models/users";
 import { JwtPayload, sign } from "jsonwebtoken";
 import { ErrorEnum } from "../errors/httpErrors";
-
+import { UserCreateModel } from "../util/parametersInterface";
 
 /**
  * Function that creates a User. Params are taken from the body of the request
@@ -54,6 +54,6 @@ export async function login(req: express.Request, res: express.Response, next: e
         
         return res.json({ token: jwtToken });
     } catch (error) {
-        return res.status(500).json(error);
+        return next(error);
     }
 }

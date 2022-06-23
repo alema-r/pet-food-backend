@@ -30,7 +30,7 @@ class OrderNotFoundError extends HttpError {
 
 class ParameterNotValidError extends HttpError {
     constructor() {
-        super(HttpStatusCode.BAD_REQUEST, "One or more parameter are not valid");
+        super(HttpStatusCode.BAD_REQUEST, "One or more parameter are missing/not valid");
     }
 }
 
