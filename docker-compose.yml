@@ -5,13 +5,13 @@ services:
     build: .
     environment:
       - JWT_SECRET=secrettochange
-      - PORT=8081
+      - PORT=3000
       - PGUSER=root
       - PGPASS=password
       - PGHOST=postgres_db
       - PGDATABASE=pet_food_db
     ports:
-      - '8081:8081'
+      - '3000:3000'
     depends_on:
       - db
       

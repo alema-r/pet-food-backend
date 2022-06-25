@@ -6,5 +6,6 @@ dist/src/models/
 dist/src/routes/
 dist/src/util/
 dist/src/errors/
+dist/src/websockets/
 dist/index.js
 dist/index.js.map
