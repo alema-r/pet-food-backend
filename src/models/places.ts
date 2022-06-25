@@ -1,4 +1,4 @@
-import { CreationOptional, DataTypes, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model } from "sequelize";
+import { CreationOptional, DataTypes, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
 import { OrderPlace } from "./order_places";
 import { Sequelize } from "sequelize/types";
 
@@ -19,6 +19,8 @@ export class Place extends Model<InferAttributes<Place>, InferCreationAttributes
     declare hasOrderPlaces: HasManyHasAssociationsMixin<OrderPlace, number>;
     declare countOrderPlaces: HasManyCountAssociationsMixin;
     declare createOrderPlace: HasManyCreateAssociationMixin<OrderPlace, 'placeId'>;
+
+    declare order_place?: NonAttribute<OrderPlace>;
 }
 
 export const initPlace = (sequelize: Sequelize) => {

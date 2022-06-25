@@ -1,7 +1,9 @@
-import { CreationOptional, DataTypes, ForeignKey, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, ForeignKey, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
 import { Sequelize } from "sequelize/types";
+import { Food } from './foods';
 import { OrderDetail } from './order_details';
 import { OrderPlace } from './order_places';
+import { Place } from './places';
 import { User } from './users';
 
 export enum OrderStatus {
@@ -40,6 +42,9 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
     declare hasOrderPlaces: HasManyHasAssociationsMixin<OrderPlace, number>;
     declare countOrderPlaces: HasManyCountAssociationsMixin;
     declare createOrderPlace: HasManyCreateAssociationMixin<OrderPlace, 'orderUuid'>;
+
+    declare food?: NonAttribute<Food[]>;
+    declare places?: NonAttribute<Place[]>;
 }
 
 export const initOrder = (sequelize: Sequelize) => {

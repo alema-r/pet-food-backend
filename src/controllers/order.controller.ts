@@ -1,4 +1,6 @@
+import { compare } from "bcrypt";
 import express from "express";
+import { Observable, of, Subject } from "rxjs";
 import { ErrorEnum } from "../errors/httpErrors";
 import { Food } from "../models/foods";
 import { Order, OrderStatus } from "../models/orders";
@@ -8,6 +10,10 @@ import { Place } from "../models/places";
 import { User } from "../models/users";
 import sequelize from "../util/db";
 import { OrderDetailCreateModel, OrderPlaceCreateModel } from "../util/parametersInterface";
+import { messageFactory, MessageType } from "../websockets/messageFactory";
+import { executedOrderStream } from "../websockets/server.websocket";
+//import { wssMsg } from "../websockets/client.websocket";
+
 
 /**
  * Function that creates an order by using details provided in the request's body
@@ -20,6 +26,10 @@ export async function createOrder(req: express.Request, res: express.Response, n
     const transaction = await sequelize.transaction();
     try {
         const user = await User.findByPk(req.user.id);
+        if (!user) {
+            transaction.rollback();
+            return next(ErrorEnum.INTERNAL_SERVER_ERROR);
+        }
         const places: OrderPlaceCreateModel[] = req.body.places;
         const foods: OrderDetailCreateModel[] = req.body.foods;
 
@@ -60,7 +70,7 @@ export async function createOrder(req: express.Request, res: express.Response, n
             sumDeliver += place.quantity_to_deliver;
         }
 
-        if (sumDeliver !== sumWithdrawal){
+        if (sumDeliver !== sumWithdrawal) {
             await transaction.rollback();
             return next(ErrorEnum.QUANTITIES_DO_NOT_MATCH);
         }
@@ -139,4 +149,34 @@ export async function getOrderStatus(req: express.Request, res: express.Response
         next(error);
     }
 
+}
+
+
+export async function executeOrder(req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+        const order = await Order.findByPk(req.params.uuid, {include: [{model: Food}, {model: Place}]});
+        
+        if (!order) return next(ErrorEnum.ORDER_NOT_FOUND);
+        if (order.status != OrderStatus.CREATED) return next(ErrorEnum.ORDER_ALREADY_STARTED);
+
+        executedOrderStream.next(messageFactory.getMessage(MessageType.EXECUTE_ORDER, order.uuid, order));
+        return res.status(200).json({ message: "Order started succesfully" });
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export async function updateOrderStatus(uuid: string, status: OrderStatus) {
+    console.log(`Updating status of order ${uuid}, with status ${status}`);
+    //const order = await Order.findByPK(uuid);
+    //await order.update({status: status});
+}
+
+export async function verifyWithdrawalOrder(order: Order, currentFood: Food, iteration: number){
+    /*const foods = order.food!;/*
+    foods.sort( (a: Food, b: Food) => {
+        
+    })*/
 }

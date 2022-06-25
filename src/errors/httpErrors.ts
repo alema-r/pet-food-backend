@@ -22,6 +22,12 @@ class JwtMissingError extends HttpError {
     }
 }
 
+class OrderAlreadyStartedError extends HttpError {
+    constructor(){
+        super(HttpStatusCode.BAD_REQUEST, "Order has been already started.")
+    }
+}
+
 class OrderNotFoundError extends HttpError {
     constructor(){
         super(HttpStatusCode.NOT_FOUND, "Order not found");
@@ -68,6 +74,7 @@ class InternalServerError extends HttpError {
 export enum ErrorEnum {
     LOGIN_FAILED,
     JWT_MISSING,
+    ORDER_ALREADY_STARTED,
     ORDER_NOT_FOUND,
     PARAM_NOT_VALID,
     QUANTITIES_DO_NOT_MATCH,
@@ -86,6 +93,9 @@ export class ErrorFactory {
                 break;
             case ErrorEnum.JWT_MISSING:
                 error = new JwtMissingError();
+                break;
+            case ErrorEnum.ORDER_ALREADY_STARTED:
+                error = new OrderAlreadyStartedError();
                 break;
             case ErrorEnum.ORDER_NOT_FOUND:
                 error = new OrderNotFoundError();

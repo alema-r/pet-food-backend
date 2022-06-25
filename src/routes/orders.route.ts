@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createOrder, getAllOrders, getOrderByUuid, getOrderStatus } from '../controllers/order.controller'; 
+import { createOrder, executeOrder, getAllOrders, getOrderByUuid, getOrderStatus } from '../controllers/order.controller'; 
 import { checkAuth, checkPrivileges, hasAccessToOrder } from '../middleware/auth.middleware';
 import { Role } from '../models/users';
 import { validateParams } from '../middleware/validation.middleware';
@@ -16,6 +16,6 @@ orderRouter.get('/:uuid', checkAuth, checkPrivileges([Role.ADMIN, Role.USER]), h
 // get order status
 orderRouter.get('/status/:uuid', getOrderStatus);
 // execute order with specified uuid
-orderRouter.get('/execute/:uuid');
+orderRouter.get('/execute/:uuid', executeOrder);
 
 export default orderRouter;

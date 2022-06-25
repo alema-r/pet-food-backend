@@ -27,7 +27,7 @@ app.use(errorHandler);
         const server = app.listen(process.env.PORT || 3001);
 
         console.log(`Server on http://localhost:${process.env.PORT || 3001}`);
-        //const wss = createWebSocket(server);
+        const wss = await createWebSocket(server);
     } catch (error) {
         console.error(error);
     }

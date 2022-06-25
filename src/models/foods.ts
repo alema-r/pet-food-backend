@@ -1,4 +1,4 @@
-import { CreationOptional, DataTypes, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model } from "sequelize";
+import { CreationOptional, DataTypes, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
 import { Sequelize } from "sequelize/types";
 import { OrderDetail } from "./order_details";
 
@@ -17,6 +17,8 @@ export class Food extends Model<InferAttributes<Food>, InferCreationAttributes<F
     declare hasOrderDetails: HasManyHasAssociationsMixin<OrderDetail, number>;
     declare countOrderDetails: HasManyCountAssociationsMixin;
     declare createOrderDetail: HasManyCreateAssociationMixin<OrderDetail, 'foodId'>;
+
+    declare order_detail?: NonAttribute<OrderDetail>;
 }
 
 export const initFood = (sequelize: Sequelize) => {
