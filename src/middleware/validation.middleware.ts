@@ -14,7 +14,7 @@ export const validateParams = (requiredParams: PostParameters[]) => (req: expres
         switch (p) {
             case PostParameters.USER:
                 // change p
-                result.push(implementsInterface<UserCreateModel, keyof UserCreateModel>({ username: req.body.username, password: req.body.password }, ["username", "password"], ["string", "string"]));
+                result.push(implementsInterface<UserCreateModel, keyof UserCreateModel>(req.body, ["username", "password"], ["string", "string"]));
                 break;
 
             case PostParameters.ORDER_DETAIL:
