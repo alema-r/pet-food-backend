@@ -10,7 +10,7 @@ export enum OrderStatus {
     'CREATED',
     'FAILED',
     'RUNNING',
-    'COMPLETED'
+    'COMPLETED' 
 }
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
@@ -42,9 +42,10 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
     declare hasOrderPlaces: HasManyHasAssociationsMixin<OrderPlace, number>;
     declare countOrderPlaces: HasManyCountAssociationsMixin;
     declare createOrderPlace: HasManyCreateAssociationMixin<OrderPlace, 'orderUuid'>;
-
+    /*
     declare food?: NonAttribute<Food[]>;
-    declare places?: NonAttribute<Place[]>;
+    declare places?: CreationOptional<Place[]>;
+    */
 }
 
 export const initOrder = (sequelize: Sequelize) => {

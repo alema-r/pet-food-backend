@@ -1,3 +1,4 @@
+import "dotenv/config"
 import express from "express";
 import sequelize from "./src/util/db";
 import userRouter from "./src/routes/users.route";

@@ -1,6 +1,6 @@
 import express from "express";
 import { ErrorEnum } from "../errors/httpErrors";
-import { implementsInterface, OrderDetailCreateModel, OrderPlaceCreateModel, PostParameters, UserCreateModel } from "../util/parametersInterface";
+import { implementsStructure, OrderDetailCreateModel, OrderPlaceCreateModel, PostParameters, UserCreateModel } from "../util/parametersInterface";
 
 /**
  * Checks if required POST parameters are supplied by the user
@@ -13,20 +13,19 @@ export const validateParams = (requiredParams: PostParameters[]) => (req: expres
     requiredParams.map((p) => {
         switch (p) {
             case PostParameters.USER:
-                // change p
-                result.push(implementsInterface<UserCreateModel, keyof UserCreateModel>(req.body, ["username", "password"], ["string", "string"]));
+                result.push(implementsStructure<UserCreateModel, keyof UserCreateModel>(req.body, ["username", "password"], ["string", "string"]));
                 break;
 
             case PostParameters.ORDER_DETAIL:
                 console.log()
                 req.body.foods.forEach((food: any) => {
-                    result.push(implementsInterface<OrderDetailCreateModel, keyof OrderDetailCreateModel>(food, ["name", "quantity", "withdrawal_order"], ["string", "number", "number"]));
+                    result.push(implementsStructure<OrderDetailCreateModel, keyof OrderDetailCreateModel>(food, ["name", "quantity", "withdrawal_order"], ["string", "number", "number"]));
                 });
                 break;
 
             case PostParameters.ORDER_PLACE:
                 req.body.places.forEach((place: any) => {
-                    result.push(implementsInterface<OrderPlaceCreateModel, keyof OrderPlaceCreateModel>(place, ["name", "quantity_to_deliver"], ["string", "number"]));
+                    result.push(implementsStructure<OrderPlaceCreateModel, keyof OrderPlaceCreateModel>(place, ["name", "quantity_to_deliver"], ["string", "number"]));
                 });
                 break;
 

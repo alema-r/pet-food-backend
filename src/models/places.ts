@@ -20,7 +20,7 @@ export class Place extends Model<InferAttributes<Place>, InferCreationAttributes
     declare countOrderPlaces: HasManyCountAssociationsMixin;
     declare createOrderPlace: HasManyCreateAssociationMixin<OrderPlace, 'placeId'>;
 
-    declare order_place?: NonAttribute<OrderPlace>;
+    //declare order_place?: CreationOptional<OrderPlace>;
 }
 
 export const initPlace = (sequelize: Sequelize) => {

@@ -16,6 +16,6 @@ orderRouter.get('/:uuid', checkAuth, checkPrivileges([Role.ADMIN, Role.USER]), h
 // get order status
 orderRouter.get('/status/:uuid', getOrderStatus);
 // execute order with specified uuid
-orderRouter.get('/execute/:uuid', executeOrder);
+orderRouter.get('/execute/:uuid', checkAuth, checkPrivileges([Role.ADMIN, Role.USER]), hasAccessToOrder, executeOrder);
 
 export default orderRouter;

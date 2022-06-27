@@ -1,14 +1,16 @@
-import { OrderItem } from "sequelize/types";
+import { Attributes } from "sequelize/types";
 import { Order } from "../models/orders";
+import { OrderAttributesExtended } from "./modelsInterface";
 
 export class BaseMessage {
     type?: MessageType;
     message: string;
     timestamp: number;
     uuid: string;
-    order?: Order;
+    order?: OrderAttributesExtended;
     food?: string;
     place?: string;
+    weight?: number;
     constructor(message: string, uuid: string) {
         this.message = message;
         this.uuid = uuid;
@@ -17,10 +19,11 @@ export class BaseMessage {
 }
 
 class ExecutedMessage extends BaseMessage {
-    constructor(uuid: string, order: Order) {
+    constructor(uuid: string, order: OrderAttributesExtended) {
         super("Execute order", uuid);
         this.type = MessageType.EXECUTE_ORDER;
         this.order = order;
+
     }
 }
 
@@ -76,6 +79,34 @@ class ExitDeliverMessage extends BaseMessage {
     }
 }
 
+export class WeightScaleMessage extends BaseMessage {
+    constructor(uuid: string, weight: number) {
+        super("Scale measurement", uuid);
+        this.type = MessageType.SCALE;
+        this.weight = weight;
+    }
+}
+
+class OrderFailedError extends BaseMessage {
+    constructor(uuid: string) {
+        super("Order failed", uuid);
+        this.type = MessageType.ORDER_FAILED_ERROR;
+    }
+}
+
+class QuantityErrorMessage extends BaseMessage {
+    constructor(uuid: string) {
+        super("Quantities do not match", uuid);
+        this.type = MessageType.QUANTITY_ERROR;
+    }
+}
+
+class FoodOrderErrorMessage extends BaseMessage {
+    constructor(uuid: string) {
+        super("Withdrawal order was not respected.", uuid);
+        this.type = MessageType.FOOD_ORDER_ERROR;
+    }
+}
 
 export enum MessageType {
     EXECUTE_ORDER,
@@ -84,14 +115,21 @@ export enum MessageType {
     ENTER_LOAD,
     EXIT_LOAD,
     ENTER_DELIVER,
-    EXIT_DELIVER
+    EXIT_DELIVER,
+    SCALE,
+    ORDER_FAILED_ERROR,
+    QUANTITY_ERROR,
+    FOOD_ORDER_ERROR,
 }
 
 
 class MessageFactory {
-    getMessage(type: MessageType, uuid: string, order?: Order, foodOrPlace?: string): BaseMessage {
-        let msg: BaseMessage | null = null;
+    getMessage(type: MessageType, uuid: string, order?: OrderAttributesExtended, foodOrPlace?: string, weight?: number): BaseMessage {
+        let msg: BaseMessage = new BaseMessage("An error occured", uuid);
         switch (type) {
+            case MessageType.SCALE:
+                msg = new WeightScaleMessage(uuid, weight!);
+                break;
             case MessageType.COMPLETE_ORDER:
                 msg = new CompletedMessage(uuid);
                 break;
@@ -120,6 +158,22 @@ class MessageFactory {
                 msg = new ExitDeliverMessage(uuid, foodOrPlace!);
                 break;
 
+            case MessageType.ORDER_FAILED_ERROR:
+                msg = new OrderFailedError(uuid);
+                break;
+
+            case MessageType.QUANTITY_ERROR:
+                msg = new QuantityErrorMessage(uuid);
+                break;
+
+            case MessageType.FOOD_ORDER_ERROR:
+                msg = new FoodOrderErrorMessage(uuid);
+                break;
+
+            case MessageType.EXIT_DELIVER:
+                msg = new FoodOrderErrorMessage(uuid);
+                break;
+
             default:
                 break;
         }
@@ -128,44 +182,3 @@ class MessageFactory {
 }
 
 export const messageFactory = new MessageFactory()
-
-
-/*
-interface BaseMessage {
-    message: string;
-    timestamp: number
-}
-
-interface OrderMessage {
-    type: MessageType.EXECUTE_ORDER;
-    order: Order;
-}
-
-interface CompleteMessage extends BaseMessage {
-    type: MessageType.COMPLETE_ORDER;
-}
-
-interface FoodMessage extends BaseMessage {
-    type: MessageType.ENTER_LOAD | MessageType.EXIT_LOAD;
-    food: string;
-}
-
-interface PlaceMessage extends BaseMessage {
-    type: MessageType.ENTER_DELIVER | MessageType.EXIT_DELIVER;
-    place: string;
-}
-
-
-
-
-export interface WsMessage {
-    type: MessageType;
-    order_uuid: string;
-    food?: string;
-    place?: string;
-    //message: string;
-    //args: string;
-    //scale: number
-    timestamp?: Date;
-}
-*/

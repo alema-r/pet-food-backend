@@ -1,6 +1,4 @@
-import { compare } from "bcrypt";
 import express from "express";
-import { Observable, of, Subject } from "rxjs";
 import { ErrorEnum } from "../errors/httpErrors";
 import { Food } from "../models/foods";
 import { Order, OrderStatus } from "../models/orders";
@@ -11,15 +9,14 @@ import { User } from "../models/users";
 import sequelize from "../util/db";
 import { OrderDetailCreateModel, OrderPlaceCreateModel } from "../util/parametersInterface";
 import { messageFactory, MessageType } from "../websockets/messageFactory";
-import { executedOrderStream } from "../websockets/server.websocket";
-//import { wssMsg } from "../websockets/client.websocket";
+import { executedOrderStream$ } from "../websockets/server.websocket";
 
 
 /**
  * Function that creates an order by using details provided in the request's body
  * @param req express.Request
  * @param res express.Response
- * @param next express.NextFunction* @param req the HTTP request
+ * @param next express.NextFunction
  */
 export async function createOrder(req: express.Request, res: express.Response, next: express.NextFunction) {
     // We use a transaction to ensure to not insert "partial" orders in case of failure
@@ -148,10 +145,16 @@ export async function getOrderStatus(req: express.Request, res: express.Response
     } catch (error) {
         next(error);
     }
-
 }
 
-
+/**
+ * Starts the execution of the order with the uuid specified in the endpoint.
+ * It calls next on the `executedOrderStream$` subject. 
+ * @param req express.Request
+ * @param res express.Response
+ * @param next express.NextFunction
+ * @returns 
+ */
 export async function executeOrder(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
         const order = await Order.findByPk(req.params.uuid, {include: [{model: Food}, {model: Place}]});
@@ -159,7 +162,11 @@ export async function executeOrder(req: express.Request, res: express.Response, 
         if (!order) return next(ErrorEnum.ORDER_NOT_FOUND);
         if (order.status != OrderStatus.CREATED) return next(ErrorEnum.ORDER_ALREADY_STARTED);
 
-        executedOrderStream.next(messageFactory.getMessage(MessageType.EXECUTE_ORDER, order.uuid, order));
+        // Here we're ignoring the error because `order.toJSON()` contains all the necessary values,
+        // because we have included them before in the query.
+        //@ts-ignore
+        executedOrderStream$.next(messageFactory.getMessage(MessageType.EXECUTE_ORDER, order.uuid, {...order.toJSON()}));
+        
         return res.status(200).json({ message: "Order started succesfully" });
 
     } catch (error) {
@@ -167,16 +174,13 @@ export async function executeOrder(req: express.Request, res: express.Response, 
     }
 }
 
-
+/**
+ * Updates the order with the uuid and status specified
+ * @param uuid the uuid of the order to update
+ * @param status the new status
+ */
 export async function updateOrderStatus(uuid: string, status: OrderStatus) {
     console.log(`Updating status of order ${uuid}, with status ${status}`);
-    //const order = await Order.findByPK(uuid);
-    //await order.update({status: status});
-}
-
-export async function verifyWithdrawalOrder(order: Order, currentFood: Food, iteration: number){
-    /*const foods = order.food!;/*
-    foods.sort( (a: Food, b: Food) => {
-        
-    })*/
+    const order = await Order.findByPk(uuid);
+    await order!.update({status: status});
 }

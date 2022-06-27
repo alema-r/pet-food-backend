@@ -6,6 +6,7 @@ declare global {
     interface ProcessEnv {
       JWT_SECRET: string;
       NODE_ENV: 'development' | 'production';
+      N: string;
       PORT?: string;
       PWD: string;
       PGDATABASE: string,

@@ -18,7 +18,7 @@ export class Food extends Model<InferAttributes<Food>, InferCreationAttributes<F
     declare countOrderDetails: HasManyCountAssociationsMixin;
     declare createOrderDetail: HasManyCreateAssociationMixin<OrderDetail, 'foodId'>;
 
-    declare order_detail?: NonAttribute<OrderDetail>;
+    //declare order_detail?: CreationOptional<OrderDetail>;
 }
 
 export const initFood = (sequelize: Sequelize) => {
