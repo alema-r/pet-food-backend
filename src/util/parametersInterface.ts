@@ -19,10 +19,15 @@ export interface OrderPlaceCreateModel {
 }
 
 export enum PostParameters {
-    USER,
-    ORDER_DETAIL,
-    ORDER_PLACE
+    USER = "POST_USER",
+    ORDER_DETAIL = "POST_ORDER_DETAIL",
+    ORDER_PLACE = "POST_ORDER_PLACE"
 };
+
+export enum GetParameters {
+    UUID = "GET_UUID",
+    USER_ID = "GET_USER_ID",
+}
 
 /**
  * Checks if an object implements the (possibly partial) structure of an interface/class T at runtime. 
@@ -43,7 +48,11 @@ export function implementsStructure<T, K extends keyof T>(obj: any, props: K[], 
     // check types of properties, if types were provided
     if (types !== undefined) {
         const checkType = Object.values(obj).map((value, index) => typeof value === types[index]);
-        if(checkType.some( (elem) => elem === true)) return false;
+        if(checkType.some( (elem) => elem === false)) return false;
     }
-    return false;
+    return true;
 }
+
+export function validateRegex(param: string, pattern: RegExp): boolean {
+    return pattern.test(param);
+}   

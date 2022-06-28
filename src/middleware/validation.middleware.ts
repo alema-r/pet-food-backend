@@ -1,14 +1,14 @@
 import express from "express";
 import { ErrorEnum } from "../errors/httpErrors";
-import { implementsStructure, OrderDetailCreateModel, OrderPlaceCreateModel, PostParameters, UserCreateModel } from "../util/parametersInterface";
+import { GetParameters, implementsStructure, OrderDetailCreateModel, OrderPlaceCreateModel, PostParameters, UserCreateModel } from "../util/parametersInterface";
+import { validateRegex } from "../util/parametersInterface";
 
 /**
  * Checks if required POST parameters are supplied by the user
  * @param requiredParams An array of `PostParameters` to check 
  * @returns 
  */
-export const validateParams = (requiredParams: PostParameters[]) => (req: express.Request, res: express.Response, next: express.NextFunction) => {
-
+export const validateParams = (requiredParams: PostParameters[] | GetParameters[]) => (req: express.Request, res: express.Response, next: express.NextFunction) => {
     let result: boolean[] = [];
     requiredParams.map((p) => {
         switch (p) {
@@ -29,10 +29,21 @@ export const validateParams = (requiredParams: PostParameters[]) => (req: expres
                 });
                 break;
 
+            case GetParameters.USER_ID:
+                result.push(validateRegex(req.params.id, new RegExp(/^[0-9]+$/)));
+                break;
+
+            case GetParameters.UUID:
+                result.push(validateRegex(req.params.uuid, new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/, "i")));
+                break;
+
             default:
                 break;
         }
     });
-    if (result.some( elem => elem === false)) return next(ErrorEnum.PARAM_NOT_VALID)
+    if (result.some(elem => elem === false)) {
+        console.log(result);
+        return next(ErrorEnum.PARAM_NOT_VALID)
+    }
     return next();
 }
