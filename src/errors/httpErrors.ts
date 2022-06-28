@@ -22,6 +22,12 @@ class JwtMissingError extends HttpError {
     }
 }
 
+class NotImplementedError extends HttpError {
+    constructor() {
+        super(HttpStatusCode.NOT_IMPLEMENTED, "There's nothing here");
+    }
+}
+
 class OrderAlreadyStartedError extends HttpError {
     constructor(){
         super(HttpStatusCode.BAD_REQUEST, "Order has been already started.")
@@ -65,6 +71,12 @@ class UserNotFound extends HttpError {
     }
 }
 
+class WebSocketClientNotAvailable extends HttpError{
+    constructor() {
+        super(HttpStatusCode.PRECONDITION_FAILED, "The websocket client is not available. Check if it's running");
+    }
+}
+
 class InternalServerError extends HttpError {
     constructor() {
         super(HttpStatusCode.INTERNAL_SERVER_ERROR, "An error has occured");
@@ -74,6 +86,7 @@ class InternalServerError extends HttpError {
 export enum ErrorEnum {
     LOGIN_FAILED,
     JWT_MISSING,
+    NOT_IMPLEMENTED,
     ORDER_ALREADY_STARTED,
     ORDER_NOT_FOUND,
     PARAM_NOT_VALID,
@@ -81,6 +94,7 @@ export enum ErrorEnum {
     USER_ALREADY_EXISTS,
     USER_NOT_FOUND,
     UNAUTHORIZED,
+    WS_NOT_AVAILABLE,
     INTERNAL_SERVER_ERROR
 }
 
@@ -93,6 +107,9 @@ export class ErrorFactory {
                 break;
             case ErrorEnum.JWT_MISSING:
                 error = new JwtMissingError();
+                break;
+            case ErrorEnum.NOT_IMPLEMENTED:
+                error = new NotImplementedError();
                 break;
             case ErrorEnum.ORDER_ALREADY_STARTED:
                 error = new OrderAlreadyStartedError();
@@ -114,6 +131,9 @@ export class ErrorFactory {
                 break;
             case ErrorEnum.USER_NOT_FOUND:
                 error = new UserNotFound();
+                break;
+            case ErrorEnum.WS_NOT_AVAILABLE:
+                error = new WebSocketClientNotAvailable();
                 break;
         }
         return error;

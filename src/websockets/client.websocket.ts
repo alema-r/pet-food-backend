@@ -17,7 +17,7 @@ const eventClient: WebSocketSubject<BaseMessage> = webSocket({ url: `ws://localh
 /**
  * Class used to imitate the execution flow of an order
  */
-class OrderExecution {
+export class OrderExecution {
     order: OrderAttributesExtended;
     scaleSubject$: Subject<number>;
     //
@@ -155,7 +155,7 @@ class OrderExecution {
     }
 
     /**
-     * Started the execution of the order.
+     * Start the execution of the order.
      * First creates an observable by merging two observables, then it subscribes to it.
      */
     start() {

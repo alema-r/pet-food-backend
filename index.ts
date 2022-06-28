@@ -8,6 +8,7 @@ import orderRouter from "./src/routes/orders.route";
 import { createWebSocket } from "./src/websockets/server.websocket";
 import { validateParams } from "./src/middleware/validation.middleware";
 import { PostParameters } from "./src/util/parametersInterface";
+import { ErrorEnum } from "./src/errors/httpErrors";
 
 const app = express();
 
@@ -19,6 +20,11 @@ app.use('/orders', orderRouter);
 
 app.post('/register', validateParams([PostParameters.USER]), register);
 app.post('/login', validateParams([PostParameters.USER]), login);
+
+// All routes not implemented will return an error
+app.all('*', function (req, res, next) {
+    next(ErrorEnum.NOT_IMPLEMENTED);
+})
 
 app.use(errorHandler);
 

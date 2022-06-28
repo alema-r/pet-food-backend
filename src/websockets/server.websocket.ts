@@ -1,7 +1,7 @@
 import { WebSocket } from "ws";
 import { Server } from "http";
 import { OrderStatus } from "../models/orders";
-import { Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { BaseMessage, messageFactory, MessageType } from "./messageFactory";
 import { updateOrderStatus } from "../controllers/order.controller";
 import { FoodAttributesExtended, OrderAttributesExtended, PlaceAttributesExtended } from "./modelsInterface";
@@ -38,7 +38,7 @@ export async function createWebSocket(server: Server) {
     wss.on('connection', function connection(ws) {
         console.log("ws: connection");
         let check: CheckOrder;
-        executedOrderStream$.subscribe((msg) => {
+        const sub = executedOrderStream$.subscribe((msg) => {
             ws.send(JSON.stringify(msg));
             console.log(`Requested execution of order with uuid: ${msg.uuid}`);
             check = new CheckOrder(msg.order!);
@@ -56,6 +56,7 @@ export async function createWebSocket(server: Server) {
                 case MessageType.SCALE:
                     if (!check.updateLastMeasurement(msg.weight!)) {
                         sendErrorMessage(ws, MessageType.QUANTITY_ERROR, msg.uuid);
+                        sub.unsubscribe();
                         check.updateStatus(OrderStatus.FAILED);
                     };
                     break;
@@ -63,6 +64,7 @@ export async function createWebSocket(server: Server) {
                 case MessageType.ENTER_LOAD:
                     if (!check.checkWithdrawalOrder(msg.food!)) {
                         sendErrorMessage(ws, MessageType.FOOD_ORDER_ERROR, msg.uuid);
+                        sub.unsubscribe();
                         check.updateStatus(OrderStatus.FAILED);
                     }
                     break;
@@ -70,6 +72,7 @@ export async function createWebSocket(server: Server) {
                 case MessageType.EXIT_LOAD:
                     if (!check.checkWithdrawnQuantities()) {
                         sendErrorMessage(ws, MessageType.QUANTITY_ERROR, msg.uuid);
+                        sub.unsubscribe();
                         check.updateStatus(OrderStatus.FAILED);
                     };
                     break;
@@ -81,6 +84,7 @@ export async function createWebSocket(server: Server) {
                 case MessageType.EXIT_DELIVER:
                     if (!check.checkDeliveredQuantities()) {
                         sendErrorMessage(ws, MessageType.QUANTITY_ERROR, msg.uuid);
+                        sub.unsubscribe();
                         check.updateStatus(OrderStatus.FAILED);
                     };
                     break;
@@ -88,16 +92,30 @@ export async function createWebSocket(server: Server) {
                 case MessageType.COMPLETE_ORDER:
                     if (check.checkIfFinished()) check.updateStatus(OrderStatus.COMPLETED);
                     else sendErrorMessage(ws, MessageType.ORDER_FAILED_ERROR, msg.uuid);
+                    sub.unsubscribe();
                     break;
 
                 case MessageType.ORDER_FAILED_ERROR:
                     check.updateStatus(OrderStatus.FAILED);
+                    sub.unsubscribe();
                     break;
 
                 default:
                     break;
             }
         });
+
+        ws.on("error", function(err) {
+            console.log('Received error: ', err);
+            ws.close();
+            sub.unsubscribe();
+        })
+
+        ws.on("close", function(code, reason){
+            console.log('Received close event', {code, reason});
+            sub.unsubscribe();
+        })
+
     });
 
     return wss;
