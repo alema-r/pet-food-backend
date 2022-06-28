@@ -67,7 +67,7 @@ For simplicity, only the most important sequence diagrams were provided.
 ### Design Pattern
 
 **Middleware**
-The middleware pattern was used to handle various control on the HTTP requests. It's the pattern utilized by Express and it's useful to separate the responsibilities of the components by assigning to each one a specific function. In particular, we have three middlewares:
+The middleware pattern was used to apply various checks on the HTTP requests. It's the pattern utilized by Express and it's useful to separate the responsibilities of the components by assigning to each one a specific function. In particular, we have three middlewares:
 - auth middleware
 - validation middleware
 - error handler middleware
@@ -76,7 +76,7 @@ The auth middleware is responsible for:
 - checking the existence and validity of the JWT token
 - checking if a user have the necessary privileges (by checking role or property of an order)
 
-The validation middleware is responsible for validating the parameters passed to a POST or GET request. In this case, no use was made of packages to check the vality of parameters. The `implementsStructure` function is noteworthy. Since parameters passed through POST request adhere to ad-hoc interfaces, we could not check at runtime if the passed value implements or not the interface. This is the goal accomplished by `implementsStructure`:
+The validation middleware is responsible for validating the parameters passed to a POST or GET request. In this case, no use was made of packages to check the validity of parameters. The `implementsStructure` function is noteworthy. Since parameters passed through POST request adhere to ad-hoc interfaces, we could not check at runtime if the passed value implements or not the interface. This is the goal accomplished by `implementsStructure`:
 ```ts
 function implementsStructure<T, K extends keyof T>(obj: any, props: K[], types?: string[]): obj is T {
     if (!obj) return false;
@@ -92,7 +92,7 @@ function implementsStructure<T, K extends keyof T>(obj: any, props: K[], types?:
 }
 ```
 
-Using [generics](https://www.typescriptlang.org/docs/handbook/2/generics.html) we can implement a function that checks for property existence and type. 
+Using [generics](https://www.typescriptlang.org/docs/handbook/2/generics.html) we can implement a function that checks for property existence and types. 
 
 The error handler middleware is a special middleware that is the last used by the app. Its goal is to return errors occured in the previous middlewares. To create errors, a factory is used. 
 
@@ -114,7 +114,7 @@ The observer pattern was used in the execution of the order. Like stated above w
 
 Moreover, observables are used by the websocket client to emit event based on the particular order that we are processing.
 
-[RxJS](https://rxjs.dev/) library has been used to add the support for obesrvables.
+[RxJS](https://rxjs.dev/) library has been used to add the support for observables.
 
 ## Prerequisites
 
