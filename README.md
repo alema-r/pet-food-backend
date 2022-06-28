@@ -20,7 +20,7 @@ The express backend has to manage:
 - User registration / login (to obtain the JWT token)
 
 The websocket client will generate two different types of events:
-- Events relating to the collection and delivery processEvents reguarding the process
+- Events related to the collection and delivery process
 - Events emitted by a weight scale on board of the veichle every second
 
 The backend has also the job of checking (based on the websocket events) if:
@@ -41,7 +41,7 @@ The backend is divided in the following modules:
 The whole project is written in TypeScript to take advantages of type checks and to enhance safety and readability of the code.
 
 ### Design of the database
-![](img/db.png)
+![Database](img/db.png)
 
 
 ### UML Diagrams
@@ -136,13 +136,14 @@ To run this app, you must have the following installed:
 
 ```./seed.sh```
 
-This will run all the migrations and seed utilizing [sequelize-cli](https://github.com/sequelize/cli)
+This will run all the migrations and seed utilizing [sequelize-cli](https://github.com/sequelize/cli).
 
 The app will now listen to the port 3000.
 
 ### Seeds and migrations
 
 The sequelize-cli custom configuration can be found in the file `.sequelizerc`
+Seeds and migrations can be found, respectevely, in /dist/src/db/seeders and /dist/src/db/migrations
 
 ### Websocket Client
 
@@ -156,6 +157,8 @@ It will behave differently based on the argument passed:
 ## Test
 
 To test the project you can use the Postman collection in the repo.
+
+In the responses some objects are omitted for the sake of brevity (represented with `...`).
 
 ### Admin user
 
@@ -206,7 +209,7 @@ Response:
                         "orderUuid":"d2bfc481-a9cf-473c-a6ce-501379fb2cfc"
                     }
                 },
-                ...    
+                ...
             ]
     } 
     ...
