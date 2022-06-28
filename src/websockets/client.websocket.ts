@@ -17,10 +17,9 @@ const eventClient: WebSocketSubject<BaseMessage> = webSocket({ url: `ws://localh
 /**
  * Class used to imitate the execution flow of an order
  */
-export class OrderExecution {
+class OrderExecution {
     order: OrderAttributesExtended;
     scaleSubject$: Subject<number>;
-    //
     scaleWeight: number;
     foodObs$: Observable<FoodAttributesExtended>;
     placeObs$: Observable<PlaceAttributesExtended>;
@@ -55,11 +54,11 @@ export class OrderExecution {
                         ...elem,
                         order_detail: {
                             ...elem.order_detail,
-                            quantity: 0//(elem.order_detail.quantity + (elem.order_detail.quantity * parseInt(process.env.N) / 100) + 1)
+                            quantity: 999999//(elem.order_detail.quantity + (elem.order_detail.quantity * parseInt(process.env.N) / 100) + 1)
                         }
                     }
                 )),
-                tap(x => console.log(x)),
+                //tap(x => console.log(x)),
                 // delay each item emission of the observable by 3 sec 
                 concatMap(item => of(item).pipe(delay(3000))),
                 // delay start time by 1 sec
@@ -218,7 +217,20 @@ try {
         next: (msg: BaseMessage) => {
             console.log('received: %s', msg);
             if (msg.type! === MessageType.EXECUTE_ORDER) {
-                orderExec = new OrderExecution(msg.order!); //Normal execution
+                //console.log(process.argv[2]);
+                if(process.argv[2] == "1"){
+                    console.log("Quantity error client started")
+                    orderExec = new OrderExecution(msg.order!, true); //quantity error
+                }
+                else if (process.argv[2] == "2"){
+                    console.log("Order error client started")
+                    orderExec = new OrderExecution(msg.order!, undefined, true); //order error
+                }
+                else {
+                    console.log("Normal execution client started")
+                    orderExec = new OrderExecution(msg.order!); //normal execution
+                }
+                //orderExec = new OrderExecution(msg.order!); //Normal execution
                 //orderExec = new OrderExecution(msg.order!, true); //quantity error
                 //orderExec = new OrderExecution(msg.order!, undefined, true); //order error
                 orderExec.start();

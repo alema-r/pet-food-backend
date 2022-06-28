@@ -1,5 +1,12 @@
 node_modules/
 .git/
 .gitignore
-dist/
+dist/src/controllers/
+dist/src/middleware/
+dist/src/models/
+dist/src/routes/
+dist/src/util/
+dist/src/errors/
+dist/src/websockets/
+dist/index.js*
 img/
